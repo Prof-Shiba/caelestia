@@ -1,12 +1,15 @@
 # caelestia
 
-This is the main repo of the caelestia dots and contains the user configs for
-apps. This repo also includes an install script to install the entire dots.
+This is a fork of the caelestia dots for FEDORA and contains my personal user configs for
+apps/caelestia. This repo also includes an install script to install the entire dots for fedora and possibly
+debian based systems in the future. This is not meant for anyone other than me, really.
+
+This comes with some extra build from source stuff that caelestia doesn't have normally 
+due to it not being for arch-based distros.
 
 ## Installation
 
-Simply clone this repo and run the install script (you need
-[`fish`](https://github.com/fish-shell/fish-shell) installed).
+Simply clone this repo and run the install script.
 
 > [!WARNING]
 > The install script symlinks all configs into place, so you CANNOT
@@ -19,7 +22,7 @@ The install script has some options for installing configs for some apps.
 
 ```
 $ ./install.fish -h
-usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--aur-helper]
+usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord]
 
 options:
   -h, --help                  show this help message and exit
@@ -27,8 +30,6 @@ options:
   --spotify                   install Spotify (Spicetify)
   --vscode=[codium|code]      install VSCodium (or VSCode)
   --discord                   install Discord (OpenAsar + Equicord)
-  --zen                       install Zen browser
-  --aur-helper=[yay|paru]     the AUR helper to use
 ```
 
 For example:
@@ -52,7 +53,7 @@ Dependencies:
 -   app2unit
 -   wireplumber
 -   trash-cli
--   foot
+-   kitty
 -   fish
 -   fastfetch
 -   starship
@@ -69,11 +70,7 @@ Install all dependencies and follow the installation guides of the
 [shell](https://github.com/caelestia-dots/shell) and [cli](https://github.com/caelestia-dots/cli)
 to install them.
 
-> [!TIP]
-> If on Arch or an Arch-based distro, there is a meta package available in the AUR
-> that pulls in all dependencies (`caelestia-meta`).
-
-Then copy or symlink the `hypr`, `foot`, `fish`, `fastfetch`, `uwsm` and `btop` folders to the
+Then copy or symlink the `hypr`, `kitty`, `fish`, `fastfetch`, `uwsm` and `btop` folders to the
 `$XDG_CONFIG_HOME` (usually `~/.config`) directory. e.g. `hypr -> ~/.config/hypr`.
 Copy `starship.toml` to `$XDG_CONFIG_HOME/starship.toml`.
 
@@ -101,31 +98,11 @@ Finally, install the extension VSIX from `vscode/caelestia-vscode-integration`.
 code --install-extension vscode/caelestia-vscode-integration/caelestia-vscode-integration-*.vsix
 ```
 
-#### Installing Zen Browser configs:
-
-Install Zen Browser, then copy or symlink `zen/userChrome.css` to the `chrome` folder in your
-profile of choice in `~/.zen`. e.g. `zen/userChrome.css -> ~/.zen/<profile>/chrome/userChrome.css`.
-
-Now install the native app by copying `zen/native_app/manifest.json` to
-`~/.mozilla/native-messaging-hosts/caelestiafox.json` and replacing the `{{ $lib }}` string in it
-with the absolute path of `~/.local/lib/caelestia` (this must be the absolute path, e.g.
-`/home/user/.local/lib/caelestia`). Then copy or symlink `zen/native_app/app.fish` to
-`~/.local/lib/caelestia/caelestiafox`.
-
-Finally, install the CaelestiaFox extension from [here](https://addons.mozilla.org/en-US/firefox/addon/caelestiafox).
-
 ## Updating
 
-Simply run `yay` to update the AUR packages, then `cd` into the repo directory and run `git pull` to update the configs.
+Update fedora using dnf, then `cd` into the repo directory and run `git pull` to update the configs.
 
 ## Usage
-
-> [!NOTE]
-> These dots do not contain a login manager (for now), so you must install a
-> login manager yourself unless you want to log in from a TTY. I recommend
-> [`greetd`](https://sr.ht/~kennylevinsen/greetd) with
-> [`tuigreet`](https://github.com/apognu/tuigreet), however you can use
-> any login manager you want.
 
 There aren't really any usage instructions... these are a set of dotfiles.
 
@@ -133,10 +110,9 @@ Here's a list of useful keybinds though:
 
 -   `Super` - open launcher
 -   `Super` + `#` - switch to workspace `#`
--   `Super` `Alt` + `#` - move window to workspace `#`
--   `Super` + `T` - open terminal (foot)
--   `Super` + `W` - open browser (zen)
--   `Super` + `C` - open IDE (vscodium)
+-   `Super` `Shift` + `#` - move window to workspace `#`
+-   `Super` + `E` - open terminal (foot)
+-   `Super` + `A` - open browser (zen)
 -   `Super` + `S` - toggle special workspace or close current special workspace
 -   `Ctrl` `Alt` + `Delete` - open session menu
 -   `Ctrl` `Super` + `Space` - toggle media play state

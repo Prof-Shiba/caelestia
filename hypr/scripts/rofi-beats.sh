@@ -1,7 +1,8 @@
 #!/bin/bash
 # /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
 # For Rofi Beats to play online Music or Locally saved media files
-# Edited by prof-shiba to work with hyde
+# Edited by prof-shiba to work with other dotfiles. pulls different
+# rofi themes and uses those instead
 
 # Variables
 mDIR="$HOME/Music/"

@@ -7,7 +7,7 @@ command -v zoxide &> /dev/null && zoxide init fish --cmd cd | source
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim
-set -gx PATH $PATH /usr/share/archcraft/scripts/
+# set -gx PATH $PATH /usr/share/archcraft/scripts/
 
 # Better ls
 alias ls='eza --icons --group-directories-first -1'
@@ -26,7 +26,6 @@ alias cf='clear;fastfetch'
 alias ga='git add'
 alias gc='git commit -m'
 alias gp='git push origin main'
-alias cleanup='sudo pacman -Rns $(pacman -Qdtq)'
 
 if set -q XDG_SESSION_DESKTOP && string match -q "Hyprland" "$XDG_SESSION_DESKTOP"
         if test -f ~/.local/state/caelestia/sequences.txt
@@ -41,7 +40,7 @@ function mark_prompt_start --on-event fish_prompt
     echo -en "\e]133;A\e\\"
 end
 
-pokego --no-title --random 1-7
+# pokego --no-title --random 1-7
 alias nvimc='NVIM_APPNAME=nvchad nvim'
 
 alias ..='cd ..'

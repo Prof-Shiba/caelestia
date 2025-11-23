@@ -3,6 +3,9 @@
 # There will be another script that installs all deps and stuff
 # we need to build from source, this one will call it. Still WIP.
 
+# TODO: Install rofi themes and move create caelestia shell 
+# config in ~/.config/caelestia/
+
 argparse -n 'install.fish' -X 0 \
     'h/help' \
     'noconfirm' \

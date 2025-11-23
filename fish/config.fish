@@ -1,42 +1,51 @@
-if status is-interactive
-    # Starship custom prompt
-    starship init fish | source
+# Starship custom prompt
+starship init fish | source
 
-    # Direnv + Zoxide
-    command -v direnv &> /dev/null && direnv hook fish | source
-    command -v zoxide &> /dev/null && zoxide init fish --cmd cd | source
+# Direnv + Zoxide
+command -v direnv &> /dev/null && direnv hook fish | source
+command -v zoxide &> /dev/null && zoxide init fish --cmd cd | source
 
-    # Better ls
-    alias ls='eza --icons --group-directories-first -1'
+set -gx EDITOR nvim
+set -gx VISUAL nvim
+set -gx PATH $PATH /usr/share/archcraft/scripts/
 
-    # Abbrs
-    abbr lg 'lazygit'
-    abbr gd 'git diff'
-    abbr ga 'git add .'
-    abbr gc 'git commit -am'
-    abbr gl 'git log'
-    abbr gs 'git status'
-    abbr gst 'git stash'
-    abbr gsp 'git stash pop'
-    abbr gp 'git push'
-    abbr gpl 'git pull'
-    abbr gsw 'git switch'
-    abbr gsm 'git switch main'
-    abbr gb 'git branch'
-    abbr gbd 'git branch -d'
-    abbr gco 'git checkout'
-    abbr gsh 'git show'
+# Better ls
+alias ls='eza --icons --group-directories-first -1'
 
-    abbr l 'ls'
-    abbr ll 'ls -l'
-    abbr la 'ls -a'
-    abbr lla 'ls -la'
+# # Helpful aliases
+alias c='clear'
+alias l='eza -lh --icons=auto'                                         # long list
+alias ls='eza -1 --icons=auto'                                         # short list
+alias cl='clear;eza -lha --icons=auto --sort=name --group-directories-first' # long list all
+alias ll='eza -lha --icons=auto --sort=name --group-directories-first' # long list all
+alias ld='eza -lhD --icons=auto'                                       # long list dirs
+alias lt='eza --icons=auto --tree'                                     # list folder as tree
+alias fastfetch='fastfetch --logo-type kitty'
+alias f='fastfetch'
+alias cf='clear;fastfetch'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push origin main'
+alias cleanup='sudo pacman -Rns $(pacman -Qdtq)'
 
-    # Custom colours
-    cat ~/.local/state/caelestia/sequences.txt 2> /dev/null
-
-    # For jumping between prompts in foot terminal
-    function mark_prompt_start --on-event fish_prompt
-        echo -en "\e]133;A\e\\"
+if set -q XDG_SESSION_DESKTOP && string match -q "Hyprland" "$XDG_SESSION_DESKTOP"
+        if test -f ~/.local/state/caelestia/sequences.txt
+            printf (cat ~/.local/state/caelestia/sequences.txt 2>/dev/null)
     end
 end
+
+# cat ~/.local/state/caelestia/sequences.txt 2> /dev/null
+
+# For jumping between prompts in foot terminal
+function mark_prompt_start --on-event fish_prompt
+    echo -en "\e]133;A\e\\"
+end
+
+pokego --no-title --random 1-7
+alias nvimc='NVIM_APPNAME=nvchad nvim'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'

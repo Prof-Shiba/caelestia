@@ -1,28 +1,26 @@
 #!/usr/bin/env fish
 
+# There will be another script that installs all deps and stuff
+# we need to build from source, this one will call it. Still WIP.
+
 argparse -n 'install.fish' -X 0 \
     'h/help' \
     'noconfirm' \
     'spotify' \
     'vscode=?!contains -- "$_flag_value" codium code' \
     'discord' \
-    'zen' \
-    'aur-helper=!contains -- "$_flag_value" yay paru' \
     -- $argv
 or exit
 
 # Print help
 if set -q _flag_h
-    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode] [--discord] [--aur-helper]'
+    echo 'usage: ./install.sh [-h] [--noconfirm] [--spotify] [--vscode]'
     echo
     echo 'options:'
     echo '  -h, --help                  show this help message and exit'
     echo '  --noconfirm                 do not confirm package installation'
     echo '  --spotify                   install Spotify (Spicetify)'
     echo '  --vscode=[codium|code]      install VSCodium (or VSCode)'
-    echo '  --discord                   install Discord (OpenAsar + Equicord)'
-    echo '  --zen                       install Zen browser'
-    echo '  --aur-helper=[yay|paru]     the AUR helper to use'
 
     exit
 end
@@ -73,10 +71,8 @@ function confirm-overwrite -a path
     return 0
 end
 
-
 # Variables
 set -q _flag_noconfirm && set noconfirm '--noconfirm'
-set -q _flag_aur_helper && set -l aur_helper $_flag_aur_helper || set -l aur_helper paru
 set -q XDG_CONFIG_HOME && set -l config $XDG_CONFIG_HOME || set -l config $HOME/.config
 set -q XDG_STATE_HOME && set -l state $XDG_STATE_HOME || set -l state $HOME/.local/state
 
@@ -88,10 +84,10 @@ echo '│     / ____/___ ____  / /__  _____/ /_(_)___ _   │'
 echo '│    / /   / __ `/ _ \/ / _ \/ ___/ __/ / __ `/   │'
 echo '│   / /___/ /_/ /  __/ /  __(__  ) /_/ / /_/ /    │'
 echo '│   \____/\__,_/\___/_/\___/____/\__/_/\__,_/     │'
-echo '│                                                 │'
+echo '│                   (fedora :D)                   │'
 echo '╰─────────────────────────────────────────────────╯'
 set_color normal
-log 'Welcome to the Caelestia dotfiles installer!'
+log 'Welcome to the Caelestia dotfiles installer for Fedora!'
 log 'Before continuing, please ensure you have made a backup of your config directory.'
 
 # Prompt for backup
@@ -124,40 +120,8 @@ if ! set -q _flag_noconfirm
     end
 end
 
-
-# Install AUR helper if not already installed
-if ! pacman -Q $aur_helper &> /dev/null
-    log "$aur_helper not installed. Installing..."
-
-    # Install
-    sudo pacman -S --needed git base-devel $noconfirm
-    cd /tmp
-    git clone https://aur.archlinux.org/$aur_helper.git
-    cd $aur_helper
-    makepkg -si
-    cd ..
-    rm -rf $aur_helper
-
-    # Setup
-    if test $aur_helper = yay
-        $aur_helper -Y --gendb
-        $aur_helper -Y --devel --save
-    else
-        $aur_helper --gendb
-    end
-end
-
 # Cd into dir
 cd (dirname (status filename)) || exit 1
-
-# Install metapackage for deps
-log 'Installing metapackage...'
-if test $aur_helper = yay
-    $aur_helper -Bi . $noconfirm
-else
-    $aur_helper -Ui $noconfirm
-end
-fish -c 'rm -f caelestia-meta-*.pkg.tar.zst' 2> /dev/null
 
 # Install hypr* configs
 if confirm-overwrite $config/hypr
@@ -172,10 +136,10 @@ if confirm-overwrite $config/starship.toml
     ln -s (realpath starship.toml) $config/starship.toml
 end
 
-# Foot
-if confirm-overwrite $config/foot
-    log 'Installing foot config...'
-    ln -s (realpath foot) $config/foot
+# Kitty
+if confirm-overwrite $config/kitty
+    log 'Installing kitty config...'
+    ln -s (realpath kitty) $config/kitty
 end
 
 # Fish
@@ -206,8 +170,7 @@ end
 if set -q _flag_spotify
     log 'Installing spotify (spicetify)...'
 
-    set -l has_spicetify (pacman -Q spicetify-cli 2> /dev/null)
-    $aur_helper -S --needed spotify spicetify-cli spicetify-marketplace-bin $noconfirm
+    # TODO:
 
     # Set permissions and init if new install
     if test -z "$has_spicetify"
@@ -235,7 +198,7 @@ if set -q _flag_vscode
     set -l folder $config/$folder/User
 
     log "Installing vs$prog..."
-    $aur_helper -S --needed $packages $noconfirm
+    # TODO:
 
     # Install configs
     if confirm-overwrite $folder/settings.json && confirm-overwrite $folder/keybindings.json && confirm-overwrite $config/$prog-flags.conf
@@ -252,7 +215,7 @@ end
 # Install discord
 if set -q _flag_discord
     log 'Installing discord...'
-    $aur_helper -S --needed discord equicord-installer-bin $noconfirm
+    # TODO:
 
     # Install OpenAsar and Equicord
     sudo Equilotl -install -location /opt/discord
@@ -260,39 +223,6 @@ if set -q _flag_discord
 
     # Remove installer
     $aur_helper -Rns equicord-installer-bin $noconfirm
-end
-
-# Install zen
-if set -q _flag_zen
-    log 'Installing zen...'
-    $aur_helper -S --needed zen-browser-bin $noconfirm
-
-    # Install userChrome css
-    set -l chrome $HOME/.zen/*/chrome
-    if confirm-overwrite $chrome/userChrome.css
-        log 'Installing zen userChrome...'
-        ln -s (realpath zen/userChrome.css) $chrome/userChrome.css
-    end
-
-    # Install native app
-    set -l hosts $HOME/.mozilla/native-messaging-hosts
-    set -l lib $HOME/.local/lib/caelestia
-
-    if confirm-overwrite $hosts/caelestiafox.json
-        log 'Installing zen native app manifest...'
-        mkdir -p $hosts
-        cp zen/native_app/manifest.json $hosts/caelestiafox.json
-        sed -i "s|{{ \$lib }}|$lib|g" $hosts/caelestiafox.json
-    end
-
-    if confirm-overwrite $lib/caelestiafox
-        log 'Installing zen native app...'
-        mkdir -p $lib
-        ln -s (realpath zen/native_app/app.fish) $lib/caelestiafox
-    end
-
-    # Prompt user to install extension
-    log 'Please install the CaelestiaFox extension from https://addons.mozilla.org/en-US/firefox/addon/caelestiafox if you have not already done so.'
 end
 
 # Generate scheme stuff if needed

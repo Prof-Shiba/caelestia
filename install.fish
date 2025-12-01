@@ -167,7 +167,6 @@ end
 if set -q _flag_spotify
     log 'Installing spotify (spicetify)...'
 
-    # TODO:
     curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
 
     # Set permissions and init if new install
